@@ -19,6 +19,10 @@ static int test_pass = 0;
         }\
     } while(0)
 
+/**
+* except != actual 期望值不等于实际值，输出错误信息
+* 
+*/
 #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
 
 static void test_parse_null() {
@@ -27,6 +31,25 @@ static void test_parse_null() {
     EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "null"));
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
 }
+
+
+
+// 练习2 参考 test_parse_null()，加入 test_parse_true()、test_parse_false() 单元测试。
+static void test_parse_true() {
+    lept_value v;
+    v.type = LEPT_FALSE;
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "true"));
+    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+}
+
+static void test_parse_false() {
+    lept_value v;
+    v.type = LEPT_FALSE;
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "false"));
+    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+}
+
+
 
 static void test_parse_expect_value() {
     lept_value v;
@@ -56,14 +79,19 @@ static void test_parse_root_not_singular() {
     v.type = LEPT_FALSE;
     EXPECT_EQ_INT(LEPT_PARSE_ROOT_NOT_SINGULAR, lept_parse(&v, "null x"));
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
+    
+
 }
 
 static void test_parse() {
     test_parse_null();
+    test_parse_true();
+    test_parse_false();
     test_parse_expect_value();
     test_parse_invalid_value();
     test_parse_root_not_singular();
 }
+
 
 int main() {
     test_parse();
