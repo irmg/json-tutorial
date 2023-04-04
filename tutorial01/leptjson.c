@@ -3,9 +3,9 @@
 #include <stdlib.h>  /* NULL */
 
 /**
-* ¶ÏÑÔ£¨assertion£©ÊÇ C ÓïÑÔÖĞ³£ÓÃµÄ·ÀÓùÊ½±à³Ì·½Ê½£¬¼õÉÙ±à³Ì´íÎó¡£
-* ¶ÏÑÔÓÃÓÚ¼ì²â³ÌĞòÔ±ÊÇ·ñ½øĞĞÁË´íÎó±àÂë¡£
-* ×î³£ÓÃµÄÊÇÔÚº¯Êı¿ªÊ¼µÄµØ·½£¬¼ì²âËùÓĞ²ÎÊı¡£ÓĞÊ±ºòÒ²¿ÉÒÔÔÚµ÷ÓÃº¯Êıºó£¬¼ì²éÉÏÏÂÎÄÊÇ·ñÕıÈ·¡£
+* æ–­è¨€ï¼ˆassertionï¼‰æ˜¯ C è¯­è¨€ä¸­å¸¸ç”¨çš„é˜²å¾¡å¼ç¼–ç¨‹æ–¹å¼ï¼Œå‡å°‘ç¼–ç¨‹é”™è¯¯ã€‚
+* æ–­è¨€ç”¨äºæ£€æµ‹ç¨‹åºå‘˜æ˜¯å¦è¿›è¡Œäº†é”™è¯¯ç¼–ç ã€‚
+* æœ€å¸¸ç”¨çš„æ˜¯åœ¨å‡½æ•°å¼€å§‹çš„åœ°æ–¹ï¼Œæ£€æµ‹æ‰€æœ‰å‚æ•°ã€‚æœ‰æ—¶å€™ä¹Ÿå¯ä»¥åœ¨è°ƒç”¨å‡½æ•°åï¼Œæ£€æŸ¥ä¸Šä¸‹æ–‡æ˜¯å¦æ­£ç¡®ã€‚
 */
 #define EXPECT(c, ch)       do { assert(*c->json == (ch)); c->json++; } while(0)
 
@@ -58,7 +58,7 @@ static int lept_parse_false(lept_context* c, lept_value* v) {
 
 
 /* value = null / false / true */
-/* ÌáÊ¾£ºÏÂÃæ´úÂëÃ»´¦Àí false / true£¬½«»áÊÇÁ·Ï°Ö®Ò» */
+/* æç¤ºï¼šä¸‹é¢ä»£ç æ²¡å¤„ç† false / trueï¼Œå°†ä¼šæ˜¯ç»ƒä¹ ä¹‹ä¸€ */
 static int lept_parse_value(lept_context* c, lept_value* v) {
     switch (*c->json) {
         case 'n':  return lept_parse_null(c, v);
@@ -73,10 +73,10 @@ static int lept_parse_value(lept_context* c, lept_value* v) {
 
 
 /**
-* ÌáÊ¾£ºÕâÀïÓ¦¸ÃÊÇ JSON-text = ws value ws   £¨whitespace£©¿Õ¸ñ
-* ÒÔÏÂÊµÏÖÃ»´¦Àí×îºóµÄ ws ºÍ LEPT_PARSE_ROOT_NOT_SINGULAR
-* ½âÎö JSON
-* ´«Èë×Ö·û´®£¬²»ÄÜ¸ü¸Ä£¬Òò´ËÊ¹ÓÃ const char*
+* æç¤ºï¼šè¿™é‡Œåº”è¯¥æ˜¯ JSON-text = ws value ws   ï¼ˆwhitespaceï¼‰ç©ºæ ¼
+* ä»¥ä¸‹å®ç°æ²¡å¤„ç†æœ€åçš„ ws å’Œ LEPT_PARSE_ROOT_NOT_SINGULAR
+* è§£æ JSON
+* ä¼ å…¥å­—ç¬¦ä¸²ï¼Œä¸èƒ½æ›´æ”¹ï¼Œå› æ­¤ä½¿ç”¨ const char*
 */
 int lept_parse(lept_value* v, const char* json) {
     lept_context c;
@@ -87,23 +87,13 @@ int lept_parse(lept_value* v, const char* json) {
     lept_parse_whitespace(&c);
 
     /**
-    * ĞŞÕı¹ØÓÚ LEPT_PARSE_ROOT_NOT_SINGULAR µÄµ¥Ôª²âÊÔ£¬Èô json ÔÚÒ»¸öÖµÖ®ºó£¬¿Õ°×Ö®ºó»¹ÓĞÆäËü×Ö·û£¬
-    * ÔòÒª·µ»Ø LEPT_PARSE_ROOT_NOT_SINGULAR¡£
+    * ä¿®æ­£å…³äº LEPT_PARSE_ROOT_NOT_SINGULAR çš„å•å…ƒæµ‹è¯•ï¼Œè‹¥ json åœ¨ä¸€ä¸ªå€¼ä¹‹åï¼Œç©ºç™½ä¹‹åè¿˜æœ‰å…¶å®ƒå­—ç¬¦ï¼Œ
+    * åˆ™è¦è¿”å› LEPT_PARSE_ROOT_NOT_SINGULARã€‚
     */
-    // ĞŞÕıÒ²ÕıÈ·
-    /*if (lept_parse_value(&c, v) == LEPT_PARSE_OK) {
-        lept_parse_whitespace(&c);
-        if (*c.json != "\0")
-            return LEPT_PARSE_ROOT_NOT_SINGULAR;
-    }  
-    return lept_parse_value(&c, v);*/
-
-    //µÚ¶şÖÖĞ´·¨
-
     int ret;
     if ((ret = lept_parse_value(&c, v)) == LEPT_PARSE_OK) {
         lept_parse_whitespace(&c);
-        if (*c.json != "\0")
+        if (*c.json != '\0')
             ret = LEPT_PARSE_ROOT_NOT_SINGULAR;
     }
     return ret; 
